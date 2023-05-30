@@ -35,28 +35,28 @@ export const ContentFields = styled.div`
     width: 100%;
   }
 
-  .zipcode {
+  .cep {
     grid-area: 1;
   }
 
-  .street {
+  .logradouro {
     grid-area: 2 / 1 / auto / 4;
   }
 
-  .number {
+  .numero {
     grid-area: 3 / 1 / auto / 2;
   }
 
-  .complement {
+  .complemento {
     grid-area: 3 / 2 / auto / 4;
     position: relative;
   }
 
-  .neighborhood {
+  .bairro {
     grid-area: 4 / 1 / auto / 1;
   }
 
-  .city {
+  .localidade {
     grid-area: 4 / 2 / auto / 2;
   }
 

@@ -14,7 +14,7 @@ import {
   ContentPaymentOptions,
 } from './style'
 
-import { FeildsForm } from '../Fields'
+import { FeildForm } from '../Fields'
 import { useFormContext } from 'react-hook-form'
 
 export function UserDataForm() {
@@ -41,34 +41,34 @@ export function UserDataForm() {
         </ContentDeliveryFormInformation>
 
         <ContentFields>
-          <div className="zipcode">
-            <FeildsForm id="zipCode" placeholder="CEP" />
+          <div className="cep">
+            <FeildForm id="cep" placeholder="CEP" maxLength={8} />
           </div>
 
-          <div className="street">
-            <FeildsForm id="street" placeholder="Rua" />
+          <div className="logradouro">
+            <FeildForm id="logradouro" placeholder="Rua" />
           </div>
 
-          <div className="number">
-            <FeildsForm id="number" placeholder="Número" />
+          <div className="numero">
+            <FeildForm id="numero" placeholder="Número" />
           </div>
 
-          <div className="complement">
-            <FeildsForm id="complement" placeholder="Complemento" />
+          <div className="complemento">
+            <FeildForm id="complemento" placeholder="Complemento" />
 
             <span className="optional">Opcional</span>
           </div>
 
-          <div className="neighborhood">
-            <FeildsForm id="neighborhood" placeholder="Bairro" />
+          <div className="bairro">
+            <FeildForm id="bairro" placeholder="Bairro" />
           </div>
 
-          <div className="city">
-            <FeildsForm id="city" placeholder="Cidade" />
+          <div className="localidade">
+            <FeildForm id="localidade" placeholder="localidade" />
           </div>
 
           <div className="uf">
-            <FeildsForm id="uf" placeholder="UF" />
+            <FeildForm id="uf" placeholder="UF" />
           </div>
         </ContentFields>
       </FormSection>

@@ -7,7 +7,7 @@ interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   id: string
 }
 
-export function FeildsForm({ id, ...props }: InputProps) {
+export function FeildForm({ id, ...props }: InputProps) {
   const {
     register,
     formState: { errors },

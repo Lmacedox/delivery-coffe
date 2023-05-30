@@ -16,14 +16,14 @@ export interface Product {
 }
 
 export interface PaymentData {
-  number: string
-  zipCode: string
-  street: string
-  neighborhood: string
-  city: string
+  numero: string
+  cep: string
+  logradouro: string
+  bairro: string
+  localidade: string
   uf: string
   paymentType: string
-  complement?: string | undefined
+  complemento?: string | undefined
 }
 
 interface CartContextType {
@@ -51,13 +51,21 @@ export function CardContextProvider({ children }: CartContextProviderProps) {
   })
   const { products } = cartState
 
-  const [paymentData, setPaymentData] = useState<PaymentData>()
+  const [paymentData, setPaymentData] = useState<PaymentData>(() => {
+    const storagePaymentDataAsJSON = localStorage.getItem('@payment-data:1.0.0')
+
+    if (storagePaymentDataAsJSON) {
+      return JSON.parse(storagePaymentDataAsJSON)
+    }
+  })
 
   const totalProductInCart = products.length
 
   function addPaymentData(paymentFormData: PaymentData) {
-    console.log('Dados de pagamento', paymentFormData)
     setPaymentData(paymentFormData)
+
+    const paymentDataJSON = JSON.stringify(paymentFormData)
+    localStorage.setItem('@payment-data:1.0.0', paymentDataJSON)
   }
 
   function addProductToCart(product: Product) {

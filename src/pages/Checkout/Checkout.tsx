@@ -4,20 +4,21 @@ import * as zod from 'zod'
 import { FormData } from './Checkout.style'
 import { SelectedCoffes } from './components/SelectedCoffes'
 import { UserDataForm } from './components/UserDataForm'
-import { useContext, useEffect } from 'react'
+import { useCallback, useContext, useEffect } from 'react'
 import { CartContext } from '../../context/CardContext'
 import { toast } from 'react-toastify'
 import { useNavigate } from 'react-router-dom'
+import { api } from '../../services/api'
 
 const requiredField = 'Requerido'
 
 const paymentInformationFormDataSchema = zod.object({
-  zipCode: zod.string().nonempty(requiredField),
-  street: zod.string().nonempty(requiredField),
-  number: zod.string().nonempty(requiredField),
-  complement: zod.string().optional(),
-  neighborhood: zod.string().nonempty(requiredField),
-  city: zod.string().nonempty(requiredField),
+  cep: zod.string().nonempty(requiredField),
+  logradouro: zod.string().nonempty(requiredField),
+  numero: zod.string().nonempty(requiredField),
+  complemento: zod.string().optional(),
+  bairro: zod.string().nonempty(requiredField),
+  localidade: zod.string().nonempty(requiredField),
   uf: zod.string().nonempty(requiredField),
   paymentType: zod.string().nonempty('Informe a forma de pagamento.'),
 })
@@ -41,7 +42,6 @@ export function Checkout() {
   })
 
   function handleSubmitUserPaymentData(data: paymentInformationFormData) {
-    console.log('Submit!')
     addPaymentData(data)
     if (!totalProductInCart) {
       toast.warn('Adicione um produto ao carinho para proseguir')
@@ -50,11 +50,37 @@ export function Checkout() {
     navigate('/success')
   }
 
-  const { handleSubmit } = paymentInformationForm
+  const { handleSubmit, watch, setValue } = paymentInformationForm
+
+  const userCep = watch('cep')
+
+  const handleSearchZipCode = useCallback(async () => {
+    toast.promise(
+      api.get(`/${userCep}/json`).then(({ data }) => {
+        if (data.erro) {
+          toast.error('Não foi possível localizar o CEP informado.')
+          return
+        }
+
+        Object.entries(data).forEach(([name, value]) =>
+          setValue(name as keyof paymentInformationFormData, value as string),
+        )
+      }),
+      {
+        success: 'CEP encontrado!',
+        pending: 'Buscando CEP',
+        error: 'Ocorreu um erro buscar o CEP, tente novamente mais tarde.',
+      },
+    )
+  }, [setValue, userCep])
 
   useEffect(() => {
-    console.log(paymentData)
-  }, [paymentData])
+    console.log('call')
+    if (!!userCep && userCep.length === 8) {
+      handleSearchZipCode()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userCep])
 
   return (
     <main>

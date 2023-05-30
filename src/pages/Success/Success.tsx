@@ -26,16 +26,16 @@ export function Sucess() {
       <span className={defaultTheme.classes['text-regular-M']}>
         Entrega em{' '}
         <b>
-          {paymentData?.street}, {paymentData?.number}
+          {paymentData?.logradouro}, {paymentData?.numero}
         </b>{' '}
-        {paymentData?.neighborhood} - {paymentData?.city},{paymentData?.uf}
+        {paymentData?.bairro} - {paymentData?.localidade},{paymentData?.uf}
       </span>
     ),
     [
-      paymentData?.city,
-      paymentData?.neighborhood,
-      paymentData?.number,
-      paymentData?.street,
+      paymentData?.localidade,
+      paymentData?.bairro,
+      paymentData?.numero,
+      paymentData?.logradouro,
       paymentData?.uf,
     ],
   )

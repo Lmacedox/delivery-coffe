@@ -28,7 +28,7 @@ type paymentInformationFormData = zod.infer<
 >
 
 export function Checkout() {
-  const { paymentData, addPaymentData, totalProductInCart } =
+  const { paymentData, addPaymentData, totalProductInCart, handleSearchCEP } =
     useContext(CartContext)
 
   const navigate = useNavigate()
@@ -37,6 +37,10 @@ export function Checkout() {
     resolver: zodResolver(paymentInformationFormDataSchema),
     mode: 'onSubmit',
     defaultValues: paymentData || {
+      cep: '',
+      bairro: '',
+      localidade: '',
+      logradouro: '',
       paymentType: '',
     },
   })
@@ -54,33 +58,16 @@ export function Checkout() {
 
   const userCep = watch('cep')
 
-  const handleSearchZipCode = useCallback(async () => {
-    toast.promise(
-      api.get(`/${userCep}/json`).then(({ data }) => {
-        if (data.erro) {
-          toast.error('Não foi possível localizar o CEP informado.')
-          return
-        }
-
-        Object.entries(data).forEach(([name, value]) =>
-          setValue(name as keyof paymentInformationFormData, value as string),
-        )
-      }),
-      {
-        success: 'CEP encontrado!',
-        pending: 'Buscando CEP',
-        error: 'Ocorreu um erro buscar o CEP, tente novamente mais tarde.',
-      },
-    )
-  }, [setValue, userCep])
-
   useEffect(() => {
-    console.log('call')
     if (!!userCep && userCep.length === 8) {
-      handleSearchZipCode()
+      handleSearchCEP(userCep)
+
+      Object.entries(paymentData!).forEach(([name, value]) =>
+        setValue(name as keyof paymentInformationFormData, value as string),
+      )
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userCep])
+  }, [userCep, paymentData])
 
   return (
     <main>

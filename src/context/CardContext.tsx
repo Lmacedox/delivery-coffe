@@ -5,6 +5,9 @@ import {
   removeProductCart,
   changeProductAmountCart,
 } from '../reducers/cart/actions'
+import { toast } from 'react-toastify'
+import { api } from '../services/api'
+import { produce } from 'immer'
 
 export interface Product {
   productId: number
@@ -37,6 +40,7 @@ interface CartContextType {
     typeAction: 'increment' | 'decrement'
   }) => void
   addPaymentData: (addPaymentData: PaymentData) => void
+  handleSearchCEP(cep: string): Promise<void>
 }
 
 interface CartContextProviderProps {
@@ -56,6 +60,14 @@ export function CardContextProvider({ children }: CartContextProviderProps) {
 
     if (storagePaymentDataAsJSON) {
       return JSON.parse(storagePaymentDataAsJSON)
+    }
+
+    return {
+      cep: '',
+      bairro: '',
+      localidade: '',
+      uf: '',
+      logradouro: '',
     }
   })
 
@@ -83,6 +95,31 @@ export function CardContextProvider({ children }: CartContextProviderProps) {
     dispatch(changeProductAmountCart({ ...data }))
   }
 
+  async function handleSearchCEP(cep: string) {
+    const getAdress = api.get(`/${cep}/json`).then(({ data }) => {
+      console.log(data)
+      if (data.erro !== undefined) {
+        throw new Error()
+      }
+
+      const paymentAddress = produce(paymentData, (draft) => {
+        draft.cep = data.cep
+        draft.bairro = data.bairro
+        draft.localidade = data.localidade
+        draft.logradouro = data.logradouro
+        draft.uf = data.uf
+      })
+
+      setPaymentData(paymentAddress)
+    })
+
+    toast.promise(getAdress, {
+      success: 'CEP encontrado!',
+      pending: 'Buscando CEP',
+      error: 'Ocorreu um erro buscar o CEP, tente novamente mais tarde.',
+    })
+  }
+
   return (
     <CartContext.Provider
       value={{
@@ -93,6 +130,7 @@ export function CardContextProvider({ children }: CartContextProviderProps) {
         removeProductToCart,
         changeProductAmount,
         addPaymentData,
+        handleSearchCEP,
       }}
     >
       {children}

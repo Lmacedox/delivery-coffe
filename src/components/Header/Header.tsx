@@ -11,12 +11,18 @@ import {
   HeaderContainer,
   WrapperAddressAndCart,
 } from './Header.style'
+import { AddressModal } from '../AddressModal'
 
 export function Header() {
-  const { products } = useContext(CartContext)
+  const { products, paymentData } = useContext(CartContext)
+  const location =
+    paymentData?.bairro && paymentData?.uf
+      ? `${paymentData?.bairro}, ${paymentData?.uf}`
+      : ''
 
   return (
     <HeaderContainer>
+      <AddressModal />
       <nav>
         <NavLink to="/" title="Página Inicial">
           <img src={coffeDeliveryLogo} alt="" />
@@ -25,7 +31,7 @@ export function Header() {
         <WrapperAddressAndCart>
           <Address>
             <MapPin weight="fill" width={20} height={25} />
-            <span>Porto Alegre, RS</span>
+            <span>{location}</span>
           </Address>
 
           <NavLink to="/checkout" title="Página de Checkout">
